@@ -11,7 +11,6 @@ app.use(express.json());
 const { dbConnection } = require("./src/configs/dbConnection");
 dbConnection();
 
-
 app.get("/", (req, res) => {
   res.send({
     error: false,
@@ -24,6 +23,7 @@ app.use(require("./src/middlewares/queryHandler.js"));
 
 //middleware/authentication
 // app.use(require("./src/middlewares/authentication.js"));
+app.use("/", require("./src/routes"));
 
 app.use(require("./src/middlewares/errorHandler.js"));
 
