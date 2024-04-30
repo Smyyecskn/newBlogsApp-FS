@@ -11,6 +11,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("WELCOME TO THE BLOG APP");
 });
+//middleware/getModelList
+app.use(require("./src/middlewares/queryHandler.js"))
+
 
 app.use(require("./src/middlewares/errorHandler.js"));
 
