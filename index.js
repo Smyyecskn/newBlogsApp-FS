@@ -6,8 +6,12 @@ const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
 require("express-async-errors");
-
 app.use(express.json());
+// Connect to DB:
+const { dbConnection } = require("./src/configs/dbConnection");
+dbConnection();
+
+
 app.get("/", (req, res) => {
   res.send({
     error: false,
@@ -19,10 +23,7 @@ app.get("/", (req, res) => {
 app.use(require("./src/middlewares/queryHandler.js"));
 
 //middleware/authentication
-app.use(require("./src/middlewares/authentication.js"));
-
-//middleware/permissions
-app.use(require("./src/middlewares/permissions.js"));
+// app.use(require("./src/middlewares/authentication.js"));
 
 app.use(require("./src/middlewares/errorHandler.js"));
 
