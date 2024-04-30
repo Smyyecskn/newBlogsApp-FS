@@ -1,11 +1,10 @@
-"use strict"
+"use strict";
 
-const User = require('../models/user')
+const User = require("../models/user");
 
 module.exports = {
-
-    list: async (req, res) => {
-        /*
+  list: async (req, res) => {
+    /*
             #swagger.tags = ["Users"]
             #swagger.summary = "List Users"
             #swagger.description = `
@@ -18,17 +17,17 @@ module.exports = {
             `
         */
 
-        const data = await res.getModelList(User)
+    const data = await res.getModelList(User);
 
-        res.status(200).send({
-            error: false,
-            details: await res.getModelListDetails(User),
-            data
-        })
-    },
+    res.status(200).send({
+      error: false,
+      details: await res.getModelListDetails(User),
+      data,
+    });
+  },
 
-    create: async (req, res) => {
-        /*
+  create: async (req, res) => {
+    /*
             #swagger.tags = ["Users"]
             #swagger.summary = "Create User"
             #swagger.parameters['body'] = {
@@ -44,43 +43,42 @@ module.exports = {
                 }
             }
         */
-        /* EĞER login olan kullanıcı admin değilse post işleminde yetkileri false  
+    /* EĞER login olan kullanıcı admin değilse post işleminde yetkileri false  
         req.body.isStaff=false
         req.body.isAdmin=false
         */
-        const data = await User.create(req.body)
+    const data = await User.create(req.body);
 
-        res.status(201).send({
-            error: false,
-            data
-        })
-    },
+    res.status(201).send({
+      error: false,
+      data,
+    });
+  },
 
-    read: async (req, res) => {
-        /*
+  read: async (req, res) => {
+    /*
             #swagger.tags = ["Users"]
             #swagger.summary = "Get Single User"
         */
-       
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-        // if (!req.user.isAdmin) {
-        //     req.params.id = req.user.id
-        // }
-        // const data = await User.findOne({ _id: req.params.id })
 
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-        const id = req.user.isAdmin ? req.params.id : req.user.id
-        const data = await User.findOne({ _id: id })
+    //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
+    // if (!req.user.isAdmin) {
+    //     req.params.id = req.user.id
+    // }
+    // const data = await User.findOne({ _id: req.params.id })
 
-        res.status(200).send({
-            error: false,
-            data
-        })
+    //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
+    // const id = req.user.isAdmin ? req.params.id : req.user.id
+    const data = await User.findOne({ _id: req.params.id });
 
-    },
+    res.status(200).send({
+      error: false,
+      data,
+    });
+  },
 
-    update: async (req, res) => {
-        /*
+  update: async (req, res) => {
+    /*
             #swagger.tags = ["Users"]
             #swagger.summary = "Update User"
             #swagger.parameters['body'] = {
@@ -97,30 +95,30 @@ module.exports = {
             }
         */
 
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-       (!req.user.isAdmin) ? req.params.id : req.user._id
-        const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+    //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
+    // if (!req.user.isAdmin) req.params.id = req.user._id;
+    const data = await User.updateOne({ _id: req.params.id }, req.body, {
+      runValidators: true,
+    });
 
-        res.status(202).send({
-            error: false,
-            data,
-            new: await User.findOne({ _id: req.params.id })
-        })
+    res.status(202).send({
+      error: false,
+      data,
+      new: await User.findOne({ _id: req.params.id }),
+    });
+  },
 
-    },
-
-    delete: async (req, res) => {
-        /*
+  delete: async (req, res) => {
+    /*
             #swagger.tags = ["Users"]
             #swagger.summary = "Delete User"
         */
 
-        const data = await User.deleteOne({ _id: req.params.id })
+    const data = await User.deleteOne({ _id: req.params.id });
 
-        res.status(data.deletedCount ? 204 : 404).send({
-            error: !data.deletedCount,
-            data
-        })
-
-    },
-}
+    res.status(data.deletedCount ? 204 : 404).send({
+      error: !data.deletedCount,
+      data,
+    });
+  },
+};
