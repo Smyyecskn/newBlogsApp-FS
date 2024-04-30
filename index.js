@@ -9,11 +9,20 @@ require("express-async-errors");
 
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("WELCOME TO THE BLOG APP");
+  res.send({
+    error: false,
+    message: "WELCOME TO THE BLOG APP",
+    user: req.user,
+  });
 });
 //middleware/getModelList
-app.use(require("./src/middlewares/queryHandler.js"))
+app.use(require("./src/middlewares/queryHandler.js"));
 
+//middleware/authentication
+app.use(require("./src/middlewares/authentication.js"));
+
+//middleware/permissions
+app.use(require("./src/middlewares/permissions.js"));
 
 app.use(require("./src/middlewares/errorHandler.js"));
 
