@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password field must be required"],
+      required: true,
       trim: true,
       set: (password) => {
         if (
@@ -20,9 +20,10 @@ const UserSchema = new mongoose.Schema(
         ) {
           return passwordEncrypt(password);
         } else {
-          throw new Error("Password type is not correct.");
+          return "wrong";
         }
       },
+      validate: (password) => password != "wrong",
     },
 
     email: {

@@ -1,7 +1,6 @@
 "use strict";
 
 const User = require("../models/user");
-
 module.exports = {
   list: async (req, res) => {
     /*
@@ -43,10 +42,10 @@ module.exports = {
                 }
             }
         */
-    /* EĞER login olan kullanıcı admin değilse post işleminde yetkileri false  
-        req.body.isStaff=false
-        req.body.isAdmin=false
-        */
+    /*EĞER login olan kullanıcı admin değilse post işleminde yetkileri false*/
+    req.body.isStaff = false;
+    req.body.isAdmin = false;
+
     const data = await User.create(req.body);
 
     res.status(201).send({
@@ -63,13 +62,13 @@ module.exports = {
 
     //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
     // if (!req.user.isAdmin) {
-    //     req.params.id = req.user.id
+    //   req.params.id = req.user.id;
     // }
-    // const data = await User.findOne({ _id: req.params.id })
+    // const data = await User.findOne({ _id: req.params.id });
 
     //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-    // const id = req.user.isAdmin ? req.params.id : req.user.id
-    const data = await User.findOne({ _id: req.params.id });
+    const id = req.user.isAdmin ? req.params.id : req.user.id;
+    const data = await User.findOne({ _id: req.user.id });
 
     res.status(200).send({
       error: false,
@@ -95,9 +94,11 @@ module.exports = {
             }
         */
 
+    !req.user.isAdmin && delete req.body.isAdmin;
+
     //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-    // if (!req.user.isAdmin) req.params.id = req.user._id;
-    const data = await User.updateOne({ _id: req.params.id }, req.body, {
+    if (!req.user.isAdmin) req.params.id = req.user._id;
+    const data = await User.updateOne({ _id: req.user._id }, req.body, {
       runValidators: true,
     });
 
@@ -113,7 +114,6 @@ module.exports = {
             #swagger.tags = ["Users"]
             #swagger.summary = "Delete User"
         */
-
     const data = await User.deleteOne({ _id: req.params.id });
 
     res.status(data.deletedCount ? 204 : 404).send({

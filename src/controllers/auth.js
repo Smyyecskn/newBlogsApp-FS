@@ -44,7 +44,7 @@ module.exports = {
           res.status(200).send({
             error: false,
             token: tokenData.token,
-            user,
+            user: req.user,
           });
         } else {
           res.errorStatusCode = 401;
